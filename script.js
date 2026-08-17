@@ -7,7 +7,6 @@ searchButton.addEventListener("click", function() {
     weatherBlock.innerHTML = "";
     let city = cityInput.value;
     cityInput.value = "";
-    console.log(city);
 
     fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=en&format=json`)
         .then(function(response) {
@@ -19,19 +18,48 @@ searchButton.addEventListener("click", function() {
             return;
             }
             let container = document.createElement("div");
+            container.classList.add("weatherCard");
+            let mainWeather = document.createElement("div");
+            mainWeather.classList.add("mainWeather");
+            let details = document.createElement("div");
+            details.classList.add("details");
             let place = document.createElement("h2");
             let temp = document.createElement("p");
+            temp.classList.add("temperature")
             let humid = document.createElement("p");
             let appar = document.createElement("p");
             let wind = document.createElement("p");
+            let humidnum = document.createElement("p");
+            let apparnum = document.createElement("p");
+            let windnum = document.createElement("p");
             let weatherCode = document.createElement("p");
+            let weatherIcon = document.createElement("p");
+            weatherIcon.classList.add("weatherIcon");
+            let conthum = document.createElement("div");
+            conthum.classList.add("conthum");
+            let contapp = document.createElement("div");
+            contapp.classList.add("contapp");
+            let contwind = document.createElement("div");
+            contwind.classList.add("contwind");
             weatherBlock.append(container);
-            container.append(place);
-            container.append(temp);
-            container.append(humid);
-            container.append(appar);
-            container.append(wind);
-            container.append(weatherCode);
+            container.append(mainWeather);
+            container.append(details);
+            mainWeather.append(place);
+            mainWeather.append(weatherIcon);
+            mainWeather.append(temp);
+            mainWeather.append(weatherCode);
+            details.append(conthum);
+            details.append(contapp);
+            details.append(contwind);
+            conthum.append(humid);
+            contapp.append(appar);
+            contwind.append(wind);
+            conthum.append(humidnum);
+            contapp.append(apparnum);
+            contwind.append(windnum);
+            humidnum.classList.add("detailNumber");
+            apparnum.classList.add("detailNumber");
+            windnum.classList.add("detailNumber");
             let latitude = data.results[0].latitude;
             let longitude = data.results[0].longitude;
             let cityName = data.results[0].name;
@@ -48,57 +76,77 @@ searchButton.addEventListener("click", function() {
                     let code = weatherData.current.weather_code;
                     place.textContent = `${cityName}, ${country}`;
                     temp.textContent = `${weather} °C`;
-                    humid.textContent = `Humidity: ${humidity}%`;
-                    appar.textContent = `Feels like:${aprnt}°C`;
-                    wind.textContent = `Wind: ${wnd}`;
+                    humid.textContent = `Humidity:`;
+                    humidnum.textContent = `${humidity}%`
+                    appar.textContent = `Feels like: `;
+                    apparnum.textContent = `${aprnt}°C`
+                    wind.textContent = `Wind: `;
+                    windnum.textContent = `${wnd} km/h`
 
+                    let icon;
                     let weatherDescription;
                     if (code === 0) {
                         weatherDescription = "Clear sky";
+                        icon = "☀️";
                     }
                     else if (code === 1) {
                         weatherDescription = "Mainly clear";
+                        icon = "🌤️";
                     }
                     else if (code === 2) {
                         weatherDescription = "Partly cloudy";
+                        icon = "⛅";
                     }
                     else if (code === 3) {
                         weatherDescription = "Overcast";
+                        icon = "☁️";
                     }
                     else if (code === 45 || code === 48) {
                         weatherDescription = "Fog";
+                        icon = "🌫️";
                     }
                     else if (code === 51 || code === 53 || code === 55) {
                         weatherDescription = "Drizzle";
+                        icon = "🌦️";
                     }
                     else if (code === 56 || code === 57) {
                         weatherDescription = "Freezing drizzle";
+                        icon = "🌨️";
                     }
                     else if (code === 61 || code === 63 || code === 65) {
                         weatherDescription = "Rain";
+                        icon = "🌧️";
                     }
                     else if (code === 66 || code === 67) {
                         weatherDescription = "Freezing rain";
+                        icon = "🌧️";
                     }
                     else if (code === 71 || code === 73 || code === 75) {
                         weatherDescription = "Snow";
+                        icon = "❄️";
                     }
                     else if (code === 77) {
                         weatherDescription = "Snow grains";
+                        icon = "🌨️";
                     }
                     else if (code === 80 || code === 81 || code === 82) {
                         weatherDescription = "Rain showers";
+                        icon = "🌦️";
                     }
                     else if (code === 85 || code === 86) {
                         weatherDescription = "Snow showers";
+                        icon = "🌨️";
                     }
                     else if (code === 95 || code === 96 || code === 99) {
                         weatherDescription = "Thunderstorm";
+                        icon = "⛈️";
                     }
                     else {
                         weatherDescription = "Unknown";
+                        icon = "🌡️";
                     }
                     weatherCode.textContent = weatherDescription;
+                    weatherIcon.textContent = icon;
                 })
     });
 });
