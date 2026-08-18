@@ -1,11 +1,16 @@
 let weatherBlock = document.querySelector(".weather");
 let cityInput = document.querySelector(".city");
 let searchButton = document.querySelector(".searchButton");
+let suggestions = document.querySelector(".suggestions");
 
 
 searchButton.addEventListener("click", function() {
     weatherBlock.innerHTML = "";
-    let city = cityInput.value;
+    suggestions.innerHTML = "";
+    let city = cityInput.value.trim();
+    if (city === "") {
+        return;
+    }
     cityInput.value = "";
 
     fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=en&format=json`)
@@ -77,11 +82,11 @@ searchButton.addEventListener("click", function() {
                     place.textContent = `${cityName}, ${country}`;
                     temp.textContent = `${weather} °C`;
                     humid.textContent = `Humidity:`;
-                    humidnum.textContent = `${humidity}%`
+                    humidnum.textContent = `${humidity}%`;
                     appar.textContent = `Feels like: `;
-                    apparnum.textContent = `${aprnt}°C`
+                    apparnum.textContent = `${aprnt}°C`;
                     wind.textContent = `Wind: `;
-                    windnum.textContent = `${wnd} km/h`
+                    windnum.textContent = `${wnd} km/h`;
 
                     let icon;
                     let weatherDescription;
@@ -148,5 +153,44 @@ searchButton.addEventListener("click", function() {
                     weatherCode.textContent = weatherDescription;
                     weatherIcon.textContent = icon;
                 })
+    });
+});
+
+cityInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        searchButton.click();
+    }
+})
+
+cityInput.addEventListener("input", function() {
+    let city = cityInput.value.trim();
+
+    if (city.length < 3) {
+        suggestions.innerHTML = "";
+        return;
+    }
+    fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=5&language=en&format=json`)
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        suggestions.innerHTML = "";
+
+        if (!data.results) {
+            return;
+        }
+
+        data.results.forEach(function(cityData) {
+            let suggestion = document.createElement("p");
+            suggestion.classList.add("suggestion");
+
+            suggestion.textContent = `${cityData.name}, ${cityData.country}`;
+            suggestions.append(suggestion);
+            suggestion.addEventListener("click", function() {
+                cityInput.value = cityData.name;
+                suggestions.innerHTML = "";
+                searchButton.click();
+            });
+        });
     });
 });
