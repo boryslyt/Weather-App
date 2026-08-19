@@ -8,13 +8,13 @@ body {
 .contpage {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     align-items: center;
 }
 .suggestions {
     position: absolute;
     top: 100%;
-    left: -2px;
+    left: 0px;
 
     width: 100%;
     max-width: 260px;
@@ -22,7 +22,6 @@ body {
     background-color: white;
     border-radius: 2px 2px 8px 8px;
     z-index: 10;
-    padding: 2px;
 }
 .suggestion {
     padding: 2px;
@@ -42,11 +41,11 @@ body {
 .inputbtn, .weatherCard {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
 }
 .inputbtn {
     gap: 10px;
     margin-top: 20px;
+    align-items: flex-start;
 }
 .inputWrap {
     display: flex;
@@ -134,4 +133,19 @@ p {
 .temperature {
     font-size: 42px;
     font-weight: 600;
+}
+.forecast {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center; 
+}
+.forecastDay {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: rgb(188, 239, 248);
+    border-radius: 10px;
+    padding: 5px;
 }

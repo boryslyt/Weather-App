@@ -2,11 +2,13 @@ let weatherBlock = document.querySelector(".weather");
 let cityInput = document.querySelector(".city");
 let searchButton = document.querySelector(".searchButton");
 let suggestions = document.querySelector(".suggestions");
+let forecast = document.querySelector(".forecast")
 
 
 searchButton.addEventListener("click", function() {
     weatherBlock.innerHTML = "";
     suggestions.innerHTML = "";
+    forecast.innerHTML = "";
     let city = cityInput.value.trim();
     if (city === "") {
         return;
@@ -30,7 +32,7 @@ searchButton.addEventListener("click", function() {
             details.classList.add("details");
             let place = document.createElement("h2");
             let temp = document.createElement("p");
-            temp.classList.add("temperature")
+            temp.classList.add("temperature");
             let humid = document.createElement("p");
             let appar = document.createElement("p");
             let wind = document.createElement("p");
@@ -69,11 +71,28 @@ searchButton.addEventListener("click", function() {
             let longitude = data.results[0].longitude;
             let cityName = data.results[0].name;
             let country = data.results[0].country;
-            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code`)
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code`)
                 .then(function(response) {
                     return response.json();
                 })
                 .then(function(weatherData) {
+                    weatherData.daily.time.forEach(function(day, index) {
+                        let maxTemp = weatherData.daily.temperature_2m_max[index];
+                        let minTemp = weatherData.daily.temperature_2m_min[index];
+                        let code = weatherData.daily.weather_code[index];
+                        let forecastDay = document.createElement("div");
+                        forecastDay.classList.add("forecastDay");
+                        let dayText = document.createElement("p");
+                        let maxText = document.createElement("p");
+                        let minText = document.createElement("p");
+                        dayText.textContent = day;
+                        maxText.textContent = `Max: ${maxTemp} °C`;
+                        minText.textContent = `Min: ${minTemp} °C`;
+                        forecastDay.append(dayText);
+                        forecastDay.append(maxText);
+                        forecastDay.append(minText);
+                        forecast.append(forecastDay);
+                    });
                     let weather = weatherData.current.temperature_2m; 
                     let humidity = weatherData.current.relative_humidity_2m;
                     let aprnt = weatherData.current.apparent_temperature;
