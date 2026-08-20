@@ -137,15 +137,25 @@ p {
 .forecast {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
     justify-content: center; 
+    margin-top: 10px;
 }
 .forecastDay {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    align-items: center;
+    gap: 6px;
     background-color: rgb(188, 239, 248);
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 5px;
+    min-width: 110px;
+    box-shadow: rgba(38, 57, 77, 0.25) 0px 8px 18px -8px;
+}
+.forecastIcon {
+    font-size: 28px;
+}
+.forecastDate {
+    font-weight: 600;
 }

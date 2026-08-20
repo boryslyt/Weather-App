@@ -77,20 +77,43 @@ searchButton.addEventListener("click", function() {
                 })
                 .then(function(weatherData) {
                     weatherData.daily.time.forEach(function(day, index) {
+                        let date = new Date(day);
+                        let shortDay = date.toLocaleDateString("en-US", {
+                            weekday: "short"
+                        });
+                        let shortDate = date.toLocaleDateString("en-US", {
+                            day: "numeric",
+                            month: "short"
+                        });
+
+                        console.log(shortDate);
+
                         let maxTemp = weatherData.daily.temperature_2m_max[index];
                         let minTemp = weatherData.daily.temperature_2m_min[index];
                         let code = weatherData.daily.weather_code[index];
+                        let dailyIcon = getWeatherIcon(code);
+
+                        let iconText = document.createElement("p");
+                        iconText.textContent = dailyIcon;
+                        iconText.classList.add("forecastIcon");
+
                         let forecastDay = document.createElement("div");
                         forecastDay.classList.add("forecastDay");
+
                         let dayText = document.createElement("p");
                         let maxText = document.createElement("p");
                         let minText = document.createElement("p");
-                        dayText.textContent = day;
+
+                        dayText.textContent = `${shortDay}, ${shortDate}`;
                         maxText.textContent = `Max: ${maxTemp} °C`;
                         minText.textContent = `Min: ${minTemp} °C`;
+                        dayText.classList.add("forecastDate");
+
                         forecastDay.append(dayText);
+                        forecastDay.append(iconText);
                         forecastDay.append(maxText);
                         forecastDay.append(minText);
+                        
                         forecast.append(forecastDay);
                     });
                     let weather = weatherData.current.temperature_2m; 
@@ -107,67 +130,52 @@ searchButton.addEventListener("click", function() {
                     wind.textContent = `Wind: `;
                     windnum.textContent = `${wnd} km/h`;
 
-                    let icon;
+                    let icon = getWeatherIcon(code);
                     let weatherDescription;
                     if (code === 0) {
                         weatherDescription = "Clear sky";
-                        icon = "☀️";
                     }
                     else if (code === 1) {
                         weatherDescription = "Mainly clear";
-                        icon = "🌤️";
                     }
                     else if (code === 2) {
                         weatherDescription = "Partly cloudy";
-                        icon = "⛅";
                     }
                     else if (code === 3) {
                         weatherDescription = "Overcast";
-                        icon = "☁️";
                     }
                     else if (code === 45 || code === 48) {
                         weatherDescription = "Fog";
-                        icon = "🌫️";
                     }
                     else if (code === 51 || code === 53 || code === 55) {
                         weatherDescription = "Drizzle";
-                        icon = "🌦️";
                     }
                     else if (code === 56 || code === 57) {
                         weatherDescription = "Freezing drizzle";
-                        icon = "🌨️";
                     }
                     else if (code === 61 || code === 63 || code === 65) {
                         weatherDescription = "Rain";
-                        icon = "🌧️";
                     }
                     else if (code === 66 || code === 67) {
                         weatherDescription = "Freezing rain";
-                        icon = "🌧️";
                     }
                     else if (code === 71 || code === 73 || code === 75) {
                         weatherDescription = "Snow";
-                        icon = "❄️";
                     }
                     else if (code === 77) {
                         weatherDescription = "Snow grains";
-                        icon = "🌨️";
                     }
                     else if (code === 80 || code === 81 || code === 82) {
                         weatherDescription = "Rain showers";
-                        icon = "🌦️";
                     }
                     else if (code === 85 || code === 86) {
                         weatherDescription = "Snow showers";
-                        icon = "🌨️";
                     }
                     else if (code === 95 || code === 96 || code === 99) {
                         weatherDescription = "Thunderstorm";
-                        icon = "⛈️";
                     }
                     else {
                         weatherDescription = "Unknown";
-                        icon = "🌡️";
                     }
                     weatherCode.textContent = weatherDescription;
                     weatherIcon.textContent = icon;
@@ -213,3 +221,51 @@ cityInput.addEventListener("input", function() {
         });
     });
 });
+
+function getWeatherIcon(code) {
+    if (code === 0) {
+        return "☀️";
+    }
+    else if (code === 1) {
+        return "🌤️";
+    }
+    else if (code === 2) {
+        return "⛅";
+    }
+    else if (code === 3) {
+        return "☁️";
+    }
+    else if (code === 45 || code === 48) {
+        return "🌫️";
+    }
+    else if (code === 51 || code === 53 || code === 55) {
+        return "🌦️";
+    }
+    else if (code === 56 || code === 57) {
+        return "🌨️";
+    }
+    else if (code === 61 || code === 63 || code === 65) {
+        return "🌧️";
+    }
+    else if (code === 66 || code === 67) {
+        return "🌧️";
+    }
+    else if (code === 71 || code === 73 || code === 75) {
+        return "❄️";
+    }
+    else if (code === 77) {
+        return "🌨️";
+    }
+    else if (code === 80 || code === 81 || code === 82) {
+        return "🌦️";
+    }
+    else if (code === 85 || code === 86) {
+        return "🌨️";
+    }
+    else if (code === 95 || code === 96 || code === 99) {
+        return "⛈️";
+    }
+    else {
+        return "🌡️";
+    }
+}
