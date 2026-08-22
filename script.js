@@ -17,6 +17,9 @@ searchButton.addEventListener("click", function() {
 
     fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=en&format=json`)
         .then(function(response) {
+            if (!response.ok) {
+                throw new Error("Request failed");
+            }
             return response.json();
     })
         .then(function(data) {
@@ -73,6 +76,9 @@ searchButton.addEventListener("click", function() {
             let country = data.results[0].country;
             fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code`)
                 .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error("Request failed");
+                    }
                     return response.json();
                 })
                 .then(function(weatherData) {
@@ -85,8 +91,6 @@ searchButton.addEventListener("click", function() {
                             day: "numeric",
                             month: "short"
                         });
-
-                        console.log(shortDate);
 
                         let maxTemp = weatherData.daily.temperature_2m_max[index];
                         let minTemp = weatherData.daily.temperature_2m_min[index];
@@ -180,8 +184,17 @@ searchButton.addEventListener("click", function() {
                     weatherCode.textContent = weatherDescription;
                     weatherIcon.textContent = icon;
                 })
-    });
+                .catch(function(error) {
+                    console.log(error);
+                    weatherBlock.textContent = "Unable to load weather data. Please try again later.";
+                });        
+            })
+            .catch(function(error) {
+                console.log(error);
+                weatherBlock.textContent = "Unable to find city data. Please try again later.";
+            });
 });
+
 
 cityInput.addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
@@ -198,6 +211,9 @@ cityInput.addEventListener("input", function() {
     }
     fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=5&language=en&format=json`)
     .then(function(response) {
+        if (!response.ok) {
+            throw new Error("Request failed");
+        }
         return response.json();
     })
     .then(function(data) {
@@ -219,6 +235,10 @@ cityInput.addEventListener("input", function() {
                 searchButton.click();
             });
         });
+    })
+    .catch(function(error) {
+        suggestions.innerHTML = "";
+        console.log(error);
     });
 });
 
